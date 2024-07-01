@@ -39,10 +39,11 @@ velX = 0
 velY = 0
 Game_over = 0
 score = 0
+high_score=0
 
 def direction_change(e):
     
-    global velX , velY, Game_over, score, snake, food
+    global velX , velY, Game_over, score, snake, food, s_body
     
 
     if (e.keysym == "Up" and velY != 1):
@@ -57,14 +58,20 @@ def direction_change(e):
     elif (e.keysym == "Left" and velX != 1):
         velX = -1
         velY = 0
+    elif (e.keysym == "space" and Game_over):
+        velX =0
+        velY=0
+        score=0
+        s_body = []
+        snake = Tile(TILESIZE*5 , TILESIZE*5)
+        food = Tile(TILESIZE*10 , TILESIZE*10)
+        Game_over = 0   
     
   
 def moving ():
-  global snake, food, s_body, Game_over, score
+  global snake, food, s_body, Game_over, score, high_score
   if(Game_over):
      return
-     
-  
   
   if(snake.x < 0 or snake.x>= WINDOW_WIDTH or snake.y<0 or snake.y>= WINDOW_HEIGHT ):
      Game_over = True
@@ -80,7 +87,10 @@ def moving ():
     food.x = random.randint (False , COLUMNS-1) * TILESIZE
     food.y = random.randint (False , ROWS-1) * TILESIZE
     score += 1
-
+    if(score > high_score):
+       high_score = score
+    else:
+       high_score   
  
   for i in range(len(s_body)-1, -1, -1):
     tile = s_body[i]
@@ -121,9 +131,13 @@ def drawing():
        
 
        canvas.create_text(WINDOW_WIDTH/2 , WINDOW_HEIGHT/2, font ="Arial 20", text = f"GAME OVER ! : {score}", fill = "white")
+       canvas.create_text(310 , 390, font ="Arial 30", text = f"High Score ! : {high_score}", fill = "white")
+       canvas.create_text(310 , 440, font ="Arial 20", text = f"Press space to restart", fill = "black")
+        
        
     else:
-       canvas.create_text(30,20, font = "Arial 10", text = f"Score : {score}", fill = "white")     
+       canvas.create_text(30,20, font = "Arial 10", text = f"Score : {score}", fill = "white")
+       canvas.create_text(40,40, font = "Arial 10", text = f"High Score : {high_score}", fill = "white")
 
     window.after(100 , drawing)
 
